@@ -37,7 +37,7 @@ class App extends Component {
     })
   }
 
-  handleSave = async (note, method) => {
+  async handleSave(note, method) {
     let res = await this.state.db[method](note);
     let { notes } = this.state;
 
@@ -51,6 +51,19 @@ class App extends Component {
     });
 
     return res;
+  }
+
+  async handleDelete(id) {
+    let { notes } = this.state;
+    let note = notes[id];
+
+    if(notes[id] && window.confirm('Are you sure you want to delete this note?')) {
+      await this.state.db.deleteNote(note);
+
+      delete notes[id];
+
+      this.setState({ notes });
+    }
   }
 
   renderContent() {

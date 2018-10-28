@@ -22,4 +22,15 @@ export default class DB {
         
         return res
     }
+
+    async updateNote(note) {
+        note.updatedAt = new Date();
+
+        const res = await this.db.put({ ...note });
+        return res;
+    }
+
+    async deleteNote(note) {
+        await this.db.remove(note);
+    }
 }
