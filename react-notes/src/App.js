@@ -8,10 +8,20 @@ import Navbar from './components/navbar';
 import IndexPage from './pages';
 import ShowPage from './pages/show';
 import NewPage from './pages/new';
+import EditPage from './pages/edit';
 
 import DB from './db';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    let db = new DB();
+    this.state={
+      db,
+      notes: {},
+      loading: true
+    }
+  }
   state = {
     db: new DB(),
     notes: {},
@@ -27,19 +37,20 @@ class App extends Component {
     })
   }
 
-  handleSave = async (note) => {
-    let { id } = await this.state.db.createNote(note)
+  handleSave = async (note, method) => {
+    let res = await this.state.db[method](note);
+    let { notes } = this.state;
 
-    const { notes } = this.state;
+    note._id = res.id;
+    note._rev = res.rev;
+
+    // const { notes } = this.state;
 
     this.setState({
-      notes: {
-        ...notes,
-        [id]: note
-      }
+      notes: { ...notes, [res.id]: note }
     });
 
-    return id;
+    return res;
   }
 
   renderContent() {
@@ -50,8 +61,15 @@ class App extends Component {
     return (
       <div className="app-content">
         <Route exact path='/' component={(props) => <IndexPage {...props} notes={this.state.notes} />} />
-        <Route exact path='/notes/:id' component={(props) => <ShowPage {...props} note={this.state.notes[props.match.params.id]} /> } />
-        <Route exact path='/new' component={(props) => <NewPage {...props} onSave={this.handleSave}/>} />
+        <Route exact path='/notes/:id' component={(props) => (
+          <ShowPage {...props} note={this.state.notes[props.match.params.id]} onDelete={(id) => this.handleDelete(id) } />
+        )} />
+        <Route exact path='/notes/:id/edit' component={(props) => (
+          <EditPage {...props} note={this.state.notes[props.match.params.id]} onSave={(note) => this.handleSave(note, 'updateNote') } />
+        )} />
+        <Route exact path='/new' component={(props) => (
+          <NewPage {...props} onSave={(note) => this.handleSave(note, 'createNote')} />
+        )} />
       </div>
     )
   }

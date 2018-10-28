@@ -4,12 +4,17 @@ import { Link } from 'react-router-dom';
 import './form.css'
 
 export default class NewPage extends React.Component {
-    state={
-        note: {
-            title:'',
-            body:'',
-            createdAt:undefined,
-            updatedAt:undefined
+    constructor(props) {
+        super(props);
+
+        this.state={
+            note: {
+                title:'',
+                body:'',
+                createdAt:undefined,
+                updatedAt:undefined
+            },
+            saving: false
         }
     }
 
@@ -43,7 +48,7 @@ export default class NewPage extends React.Component {
                     </div>
                     <div className="note-form-buttons">
                         <button className="btn">Save</button>
-                        <Link to="/" >Cancel</Link>
+                        <Link to={`/`}>Cancel</Link>
                     </div>
                 </form>
             </div>
