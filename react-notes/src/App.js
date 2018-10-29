@@ -9,6 +9,7 @@ import IndexPage from './pages';
 import ShowPage from './pages/show';
 import NewPage from './pages/new';
 import EditPage from './pages/edit';
+import SearchPage from './pages/search';
 
 import DB from './db';
 
@@ -83,7 +84,9 @@ class App extends Component {
 
     return (
       <div className="app-content">
-        <Route exact path='/' component={(props) => <IndexPage {...props} notes={this.state.notes} />} />
+        <Route exact path='/' component={(props) => (
+          <IndexPage {...props} notes={this.state.notes} />
+        )} />
         <Route exact path='/notes/:id' component={(props) => (
           <ShowPage {...props} note={this.state.notes[props.match.params.id]} onDelete={(id) => this.handleDelete(id) } />
         )} />
@@ -92,6 +95,9 @@ class App extends Component {
         )} />
         <Route exact path='/new' component={(props) => (
           <NewPage {...props} onSave={(note) => this.handleSave(note, 'createNote')} />
+        )} />
+        <Route exact path='/search' component={(props) => (
+          <SearchPage {...props} notes={this.state.notes} />
         )} />
       </div>
     )
