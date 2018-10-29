@@ -33,4 +33,10 @@ export default class DB {
     async deleteNote(note) {
         await this.db.remove(note);
     }
+
+    async deleteAllNotes() {
+        await this.db.destroy().then(function(){
+            console.log("deleted all notes")
+        })
+    }
 }

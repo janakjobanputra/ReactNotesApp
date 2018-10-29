@@ -22,6 +22,7 @@ class App extends Component {
       notes: [],
       loading: true
     };
+    this.handleDeleteAll = this.handleDeleteAll.bind(this)
   }
 
   async componentDidMount() {
@@ -62,6 +63,14 @@ class App extends Component {
     }
   }
 
+  async handleDeleteAll() {
+    console.log("deleting All", this)
+    let { notes } = this.state;
+    await this.state.db.deleteAllNotes();
+    notes = {};
+    this.setState({ notes });
+  }
+
   renderContent() {
     if(this.state.loading) {
       return <h2>Loading...</h2>
@@ -87,7 +96,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="App">
-          <Navbar />
+          <Navbar deleteAll={this.handleDeleteAll} notes={this.state.notes} />
           { this.renderContent() }
         </div>
       </BrowserRouter>
