@@ -14,7 +14,7 @@ export default class Navbar extends React.Component {
     render() {
         return (
             <nav className="navbar">
-                <h1><Link to="/">ReactNotes</Link></h1>
+                <h1><Link to="/">Simple Notes</Link></h1>
                 <div className="navbar-buttons">
                     <Link to="/search" className="btn">Search By Tags</Link>
                     <Link to="/new" className="btn">New Note</Link>

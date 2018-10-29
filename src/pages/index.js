@@ -19,7 +19,7 @@ export default class IndexPage extends React.Component {
         if(!notes.length) {
             return (
                 <div className="app-intro">
-                    <h2> Welcome to ReactNotes </h2>
+                    <h2> Welcome to Simple Notes </h2>
                     <p> You don't have any notes. <Link className="btn" to="/new">Get Started!</Link> </p>
                 </div>
             )
