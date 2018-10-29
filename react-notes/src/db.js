@@ -2,11 +2,31 @@ import PouchDB from 'pouchdb';
 
 export default class DB {
     constructor(name) {
-        this.db = new PouchDB('react-notes');
+        this.notesDb = new PouchDB('react-notes');
+        this.folderDb = new PouchDB('react-folders');
     }
 
+    //All Folder Functions
+    async getAllFolders() {
+        let allFolders = await this.folderDb.allDocs({ include_docs: true});
+        let folders = {};
+
+        allFolders.rows.forEach(f => folders[f.id] = f.doc)
+
+        return folders;
+    }
+
+    async createFolder(folder) {
+        folder.createdAt = new Date();
+        folder.updatedAt = new Date();
+        console.log("creating folder", folder)
+        const res = await this.folderDb.post({ ...folder });
+        return res
+    }
+
+    //All Notes Functions
     async getAllNotes() {
-        let allNotes = await this.db.allDocs({ include_docs: true});
+        let allNotes = await this.notesDb.allDocs({ include_docs: true});
         let notes = {};
 
         allNotes.rows.forEach(n => notes[n.id] = n.doc)
@@ -18,7 +38,7 @@ export default class DB {
         note.createdAt = new Date();
         note.updatedAt = new Date();
 
-        const res = await this.db.post({ ...note });
+        const res = await this.notesDb.post({ ...note });
         
         return res
     }
@@ -26,17 +46,18 @@ export default class DB {
     async updateNote(note) {
         note.updatedAt = new Date();
 
-        const res = await this.db.put({ ...note });
+        const res = await this.notesDb.put({ ...note });
         return res;
     }
 
     async deleteNote(note) {
-        await this.db.remove(note);
+        await this.notesDb.remove(note);
     }
 
-    async deleteAllNotes() {
-        await this.db.destroy()
+    async deleteAll() {
+        await this.notesDb.destroy()
         console.log("deleted all notes")
-        this.db = new PouchDB('react-notes');
+        this.notesDb = new PouchDB('react-notes');
+        this.folderDb = new PouchDB('react-folders');
     }
 }

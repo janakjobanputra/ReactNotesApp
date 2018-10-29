@@ -10,6 +10,7 @@ import ShowPage from './pages/show';
 import NewPage from './pages/new';
 import EditPage from './pages/edit';
 import SearchPage from './pages/search';
+import NewFolderPage from './pages/newfolder';
 
 import DB from './db';
 
@@ -20,7 +21,8 @@ class App extends Component {
     let db = new DB();
     this.state = { 
       db,
-      notes: [],
+      notes: {},
+      folders: {},
       loading: true
     };
     this.handleDeleteAll = this.handleDeleteAll.bind(this)
@@ -28,6 +30,7 @@ class App extends Component {
 
   async componentDidMount() {
     const notes = await this.state.db.getAllNotes();
+    const folders = await this.state.db.getAllFolders();
 
     this.setState({
       notes,
@@ -35,23 +38,31 @@ class App extends Component {
     });
   }
 
-  async handleSave(note, method) {
-    if(!note.title) {
+  async handleSave(thing, method, isNote) {
+    if(!thing.title) {
       console.log("returning, no title");
       return;
     }
 
-    console.log("saving note", note)
+    console.log("saving thing", thing, method)
 
-    let res = await this.state.db[method](note);
-    let { notes } = this.state;
-
-    note._id = res.id;
-    note._rev = res.rev;
-
-    this.setState({
-      notes: { ...notes, [res.id]: note }
-    });
+    let res = await this.state.db[method](thing);
+    if(isNote) {
+      let { notes } = this.state;
+      thing._id = res.id;
+      thing._rev = res.rev;
+      this.setState({
+        notes: { ...notes, [res.id]: thing }
+      });
+    } else {
+      let { folders } = this.state;
+      thing._id = res.id;
+      thing._rev = res.rev;
+      console.log("res", res, thing)
+      this.setState({
+        folders: { ...folders, [res.id]: thing }
+      });
+    }
 
     return res;
   }
@@ -72,7 +83,7 @@ class App extends Component {
   async handleDeleteAll() {
     console.log("deleting All", this)
     let { notes } = this.state;
-    await this.state.db.deleteAllNotes();
+    await this.state.db.deleteAll();
     notes = {};
     this.setState({ notes });
   }
@@ -85,19 +96,22 @@ class App extends Component {
     return (
       <div className="app-content">
         <Route exact path='/' component={(props) => (
-          <IndexPage {...props} notes={this.state.notes} />
+          <IndexPage {...props} notes={this.state.notes} folders={this.state.folders}/>
         )} />
         <Route exact path='/notes/:id' component={(props) => (
           <ShowPage {...props} note={this.state.notes[props.match.params.id]} onDelete={(id) => this.handleDelete(id) } />
         )} />
         <Route exact path='/notes/:id/edit' component={(props) => (
-          <EditPage {...props} note={this.state.notes[props.match.params.id]} onSave={(note) => this.handleSave(note, 'updateNote') } />
+          <EditPage {...props} note={this.state.notes[props.match.params.id]} onSave={(note) => this.handleSave(note, 'updateNote', true) } />
         )} />
         <Route exact path='/new' component={(props) => (
-          <NewPage {...props} onSave={(note) => this.handleSave(note, 'createNote')} />
+          <NewPage {...props} onSave={(note) => this.handleSave(note, 'createNote', true)} />
         )} />
         <Route exact path='/search' component={(props) => (
           <SearchPage {...props} notes={this.state.notes} />
+        )} />
+        <Route exact path='/newfolder' component={(props) => (
+          <NewFolderPage {...props} onSave={(folder) => this.handleSave(folder, 'createFolder', false)} />
         )} />
       </div>
     )

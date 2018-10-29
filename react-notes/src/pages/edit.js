@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { WithContext as ReactTags } from 'react-tag-input';
 import ReactQuill from 'react-quill';
 
@@ -40,7 +40,7 @@ export default class EditNotePage extends React.Component {
     }
 
     handleDeleteTag(i) {
-        const { tags } = this.state;
+        // const { tags } = this.state;
         const { note } = this.state;
         this.setState({
             tags: note.tags.filter((tag, index) => index !== i),
@@ -97,7 +97,7 @@ export default class EditNotePage extends React.Component {
         }
 
         const { note } = this.state;
-        const { tags } = this.state;
+        // const { tags } = this.state;
         let reactQuillStyles = {
             height:'95%',
             width:'100%',

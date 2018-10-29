@@ -9,18 +9,18 @@ function renderDate(updatedAt) {
     return d.format("MMMM D YYYY, HH:mm");
 }
 
-const Note = ({ note: { _id, title, body, updatedAt, tags } }) => (
+const Folder = ({ folder: { _id, title, updatedAt } }) => (
     <div className="notes-list-item">
-        <h2><Link to={`/notes/${_id}`}>{ title }</Link></h2>
+        <h2><Link to={`/folder/${_id}`}>{ title }</Link></h2>
         <span className="notes-list-date">
             { renderDate(updatedAt) }
         </span>
     </div>
 );
 
-export default ({ notes }) => (
+export default ({ folders }) => (
     <div className="notes-list">
-        <h2>All Notes</h2>
-        {notes.map(n => <Note note={n} key={`note-${n._id}`}/> )}
+        <h2>Folders</h2>
+        {folders.map(f => <Folder note={f} key={`folder-${f._id}`}/> )}
     </div>
 );
