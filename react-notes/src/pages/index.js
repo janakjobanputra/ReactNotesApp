@@ -28,7 +28,7 @@ export default class IndexPage extends React.Component {
         return(
             <div>
                 <h1> Notes </h1>
-                <NoteList notes={this.props.notes} />
+                <NoteList notes={this.state.notes} />
             </div>
         )
     }

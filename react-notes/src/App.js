@@ -15,17 +15,13 @@ import DB from './db';
 class App extends Component {
   constructor(props) {
     super(props);
+
     let db = new DB();
-    this.state={
+    this.state = { 
       db,
-      notes: {},
+      notes: [],
       loading: true
-    }
-  }
-  state = {
-    db: new DB(),
-    notes: {},
-    loading: true
+    };
   }
 
   async componentDidMount() {
@@ -34,7 +30,7 @@ class App extends Component {
     this.setState({
       notes,
       loading: false
-    })
+    });
   }
 
   async handleSave(note, method) {
