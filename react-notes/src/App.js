@@ -35,13 +35,18 @@ class App extends Component {
   }
 
   async handleSave(note, method) {
+    if(!note.title) {
+      console.log("returning, no title");
+      return;
+    }
+
+    console.log("saving note", note)
+
     let res = await this.state.db[method](note);
     let { notes } = this.state;
 
     note._id = res.id;
     note._rev = res.rev;
-
-    // const { notes } = this.state;
 
     this.setState({
       notes: { ...notes, [res.id]: note }
@@ -94,12 +99,12 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
-        <div className="App">
-          <Navbar deleteAll={this.handleDeleteAll} notes={this.state.notes} />
-          { this.renderContent() }
-        </div>
-      </BrowserRouter>
+        <BrowserRouter>
+          <div className="App">
+            <Navbar deleteAll={this.handleDeleteAll} notes={this.state.notes} />
+            { this.renderContent() }
+          </div>
+        </BrowserRouter>
     );
   }
 }

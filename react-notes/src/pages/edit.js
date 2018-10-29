@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import ReactDOM from 'react-dom';
+import { WithContext as ReactTags } from 'react-tag-input';
 import ReactQuill from 'react-quill';
 
 import './form.css'
@@ -11,15 +12,24 @@ export default class EditNotePage extends React.Component {
         super(props);
 
         this.state = {
+            tags:[],
             note: {
                 title: '',
                 body: '',
                 createdAt: null,
-                updatedAt: null
+                updatedAt: null,
+                tags:[]
             },
             saving: false
         }
+        this.state.tags = this.state.note.tags
+        //React Quill Linking
         this.handleBodyChange = this.handleBodyChange.bind(this);
+
+        //React Tags Linking
+        this.handleDeleteTag = this.handleDeleteTag.bind(this);
+        this.handleAdditionTag = this.handleAdditionTag.bind(this);
+        this.handleDragTag = this.handleDragTag.bind(this);
     }
     
     handleBodyChange(value) {
@@ -27,6 +37,40 @@ export default class EditNotePage extends React.Component {
         this.setState({
             note: { ...note, body: value}
          })
+    }
+
+    handleDeleteTag(i) {
+        const { tags } = this.state;
+        const { note } = this.state;
+        this.setState({
+            tags: note.tags.filter((tag, index) => index !== i),
+            note: { ...note, tags: note.tags.filter((tag, index) => index !== i) }
+        });
+    }
+
+    handleAdditionTag(tag) {
+        const { note } = this.state;
+        var concatTags = this.state.tags
+        note.tags.forEach((tag) => {
+            concatTags.push(tag)
+        })
+        this.setState(
+            state => ({ 
+                tags: [...note.tags, tag], 
+                note:{ ...note, tags:[...note.tags, tag] } 
+            })
+        );
+    }
+
+    handleDragTag(tag, currPos, newPos) {
+        const tags = [...this.state.tags];
+        const newTags = tags.slice();
+ 
+        newTags.splice(currPos, 1);
+        newTags.splice(newPos, 0, tag);
+ 
+        // re-render
+        this.setState({ tags: newTags });
     }
 
     async componentDidMount() {
@@ -43,7 +87,7 @@ export default class EditNotePage extends React.Component {
 
     updateValue(e) {
         let { note } = this.state;
-
+        console.log("note updated", note)
         this.setState({ note: { ...note, [e.target.name]: e.target.value } });
     }
 
@@ -53,6 +97,7 @@ export default class EditNotePage extends React.Component {
         }
 
         const { note } = this.state;
+        const { tags } = this.state;
         let reactQuillStyles = {
             height:'95%',
             width:'100%',
@@ -80,8 +125,9 @@ export default class EditNotePage extends React.Component {
                 <form onSubmit={(e) => { e.preventDefault(); this.handleSave(); }}>
                     <div className="note-form-field">
                         <label>Title</label>
-                        <input type="text" name="title" value={note.title} onChange={(e) => this.updateValue(e)} />
+                        <input type="text" name="title" value={note.title} onChange={(e) => this.updateValue(e)}  autoFocus/>
                     </div>
+                    <ReactTags tags={note.tags} handleDelete={this.handleDeleteTag} handleAddition={this.handleAdditionTag} handleDrag={this.handleDragTag} allowUnique={true} autofocus={false}/>
                     <div className="note-form-field note-form-field-text">
                         {/* <textarea name="body" value={note.body} onChange={(e) => this.updateValue(e)} /> */}
                         <ReactQuill theme="snow" value={note.body} onChange={this.handleBodyChange} style={reactQuillStyles} modules={modules}

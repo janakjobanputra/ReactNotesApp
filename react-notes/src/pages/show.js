@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import marked from 'marked';
 import dayjs from 'dayjs';
+import ReactDOM from 'react-dom';
+import { WithContext as ReactTags } from 'react-tag-input';
 
 import './show.css';
 
@@ -31,6 +33,7 @@ export default class ShowPage extends React.Component {
                     <Link className="note-edit" to={`/notes/${note._id}/edit`}>Edit</Link>
                     <button className="btn" onClick={ (e) => this.props.onDelete(note._id)}>Delete</button>
                 </div>
+                <ReactTags tags={note.tags} readOnly={true}/>
                 <div className="note-body" dangerouslySetInnerHTML={ {__html: marked(note.body) } } />
             </div>
         );

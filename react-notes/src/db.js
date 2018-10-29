@@ -35,8 +35,8 @@ export default class DB {
     }
 
     async deleteAllNotes() {
-        await this.db.destroy().then(function(){
-            console.log("deleted all notes")
-        })
+        await this.db.destroy()
+        console.log("deleted all notes")
+        this.db = new PouchDB('react-notes');
     }
 }
