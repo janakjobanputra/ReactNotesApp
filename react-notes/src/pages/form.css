@@ -25,7 +25,7 @@
     font-weight: bold;
 }
 
-.note-form-field input, .note-form-field textarea {
+.note-form-field input, .note-form-field textarea{
     width: 100%;
     padding: 10px;
     border-radius: 5px;

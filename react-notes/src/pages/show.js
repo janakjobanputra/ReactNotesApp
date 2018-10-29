@@ -28,7 +28,7 @@ export default class ShowPage extends React.Component {
                 <h1>{note.title}</h1>
                 <div className="note-created">
                     {this.renderDate()}
-                    <Link className="note-edit" to={`/notes/${note.id}/edit`}>Edit</Link>
+                    <Link className="note-edit" to={`/notes/${note._id}/edit`}>Edit</Link>
                     <button className="btn" onClick={ (e) => this.props.onDelete(note._id)}>Delete</button>
                 </div>
                 <div className="note-body" dangerouslySetInnerHTML={ {__html: marked(note.body) } } />

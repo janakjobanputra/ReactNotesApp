@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import "./form.css";
+import ReactQuill from 'react-quill';
+
+import './form.css'
+import 'react-quill/dist/quill.snow.css';
 
 export default class EditNotePage extends React.Component {
     constructor(props) {
@@ -16,6 +19,14 @@ export default class EditNotePage extends React.Component {
             },
             saving: false
         }
+        this.handleBodyChange = this.handleBodyChange.bind(this);
+    }
+    
+    handleBodyChange(value) {
+        const { note } = this.state;
+        this.setState({
+            note: { ...note, body: value}
+         })
     }
 
     async componentDidMount() {
@@ -42,6 +53,26 @@ export default class EditNotePage extends React.Component {
         }
 
         const { note } = this.state;
+        let reactQuillStyles = {
+            height:'95%',
+            width:'100%',
+            padding:'10px',
+        }
+        let modules = {
+            toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline','strike', 'blockquote'],
+                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+                ['link', 'image'],
+                ['clean']
+            ],
+          }
+        let formats = [
+            'header',
+            'bold', 'italic', 'underline', 'strike', 'blockquote',
+            'list', 'bullet', 'indent',
+            'link', 'image'
+        ]
 
         return (
             <div className="note-form">
@@ -52,7 +83,9 @@ export default class EditNotePage extends React.Component {
                         <input type="text" name="title" value={note.title} onChange={(e) => this.updateValue(e)} />
                     </div>
                     <div className="note-form-field note-form-field-text">
-                        <textarea name="body" value={this.body} onChange={(e) => this.updateValue(e)} />
+                        {/* <textarea name="body" value={note.body} onChange={(e) => this.updateValue(e)} /> */}
+                        <ReactQuill theme="snow" value={note.body} onChange={this.handleBodyChange} style={reactQuillStyles} modules={modules}
+                    formats={formats}/>
                     </div>
                     <div className="note-form-buttoms">
                         <input type="submit" value="Save" />
